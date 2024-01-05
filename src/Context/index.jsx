@@ -4,7 +4,8 @@ import axios from 'axios'
 
 const StateContext = createContext()
 
-StateContextProvider = ()=>{
+
+export const StateContextProvider = ({ children })=>{
 
     const [weather, setWeather] = useState({})
     const [values, setValues] = useState([])
@@ -26,7 +27,7 @@ StateContextProvider = ()=>{
 
         },
         headers: {
-            'X-RapidAPI-Key': import.meta.env.VITE_API_KEY, 
+            'X-RapidAPI-Key': 'f8cfe3d773mshb8fa57e17a58720p1cb2cejsn32f947b90d46', 
             'X-RapidAPI-Host': 'visual-crossing-weather.p.rapidapi.com',
         }
     }
@@ -36,8 +37,8 @@ StateContextProvider = ()=>{
 
         console.log(responce.data)
 
-        const thisData = Object.values(responce.data.locations[0])
-
+        const thisData = Object.values(responce.data.locations)[0]
+    
         setLocation(thisData.address)
         setValues(thisData.values)
         setWeather(thisData.values[0])
@@ -50,4 +51,25 @@ StateContextProvider = ()=>{
     }
      
   }
+  useEffect(()=>{
+    fetchWeather()
+  }, [place])
+
+  useEffect(()=>{
+    console.log(values)
+  },[values])
+
+  return (
+    <StateContext.Provider value={{
+        weather,
+        setPlace,
+        values,
+        location
+
+    }}>
+       {children}
+    </StateContext.Provider>
+  )
 }
+
+export const useStateContext = () => useContext(StateContext)
